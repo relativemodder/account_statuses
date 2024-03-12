@@ -106,8 +106,11 @@ class $modify(StatusProfilePage, ProfilePage) {
 
 		status_dot->setID("status_dot"_spr);
 
-		status_menu->setPosition({116, 239});
+		auto winSize = CCDirector::get()->getWinSize();
+
+		status_menu->setPosition({winSize.width / 2.f - 170.f, 220.f});
 		status_dot->setScale(1.825f);
+		status_dot->setContentSize({8.750f, 12.5f});
 
 		status_dot->setColor(cc3bFromHexString("#BEBEBE").value());
 	}
