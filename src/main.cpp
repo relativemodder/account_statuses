@@ -13,6 +13,9 @@ std::map<std::string, ccColor3B> colors_map = {
 };
 
 
+bool safeToUpdate = false;
+
+
 class $modify(StatusProfilePage, ProfilePage) {
 	bool status_own_profile;
 	bool status_loaded;
@@ -116,9 +119,14 @@ class $modify(StatusProfilePage, ProfilePage) {
 	}
 
 	void updateStatusDot(std::string status) {
+		if (this == nullptr) return;
+
 		m_fields->status_string = status;
 
 		auto status_dot = static_cast<CCMenuItemLabel*>(getChildByIDRecursive("status_dot"_spr));
+
+		if (status_dot == nullptr) return;
+
 		status_dot->setColor(colors_map[status]);
 	}
 
@@ -131,6 +139,8 @@ class $modify(StatusProfilePage, ProfilePage) {
 			.fetch("https://gdstatus.7m.pl/getStatus.php?accountID=" + std::to_string(account_id))
 			.text()
 			.then([&](std::string const& result) {
+				if (!safeToUpdate) return;
+
 				m_fields->status_loaded = true;
 				updateStatusDot(result);
 			})
@@ -144,8 +154,17 @@ class $modify(StatusProfilePage, ProfilePage) {
 	}
 
 
+	void onClose(CCObject* sender) {
+		safeToUpdate = false;
+
+		ProfilePage::onClose(sender);
+	}
+
+
 	bool init(int account_id, bool own_profile) {
 		if (!ProfilePage::init(account_id, own_profile)) return false;
+
+		safeToUpdate = true;
 
 		m_fields->status_loaded = false;
 		setupStatus(account_id, own_profile);
