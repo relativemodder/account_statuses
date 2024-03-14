@@ -54,7 +54,7 @@ class $modify(StatusProfilePage, ProfilePage) {
 		if (!m_fields->status_loaded) return;
 
 		if (m_accountID != GJAccountManager::get()->m_accountID) {
-			const char* user_status = m_fields->status_string == "null" ? "Not set" : m_fields->status_string.c_str();
+			const char* user_status = m_fields->status_string == "null" ? "Status not set, Please set one!" : m_fields->status_string.c_str();
 
 			FLAlertLayer::create(
 				std::string(std::string(m_usernameLabel->getString()) + std::string("'s status")).c_str(),
